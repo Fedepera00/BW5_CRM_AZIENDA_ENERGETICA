@@ -26,10 +26,15 @@ public class ComuneProvinciaServ {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] fields = line.split(","); // Supponendo che il CSV usi la virgola come separatore
+                if (line.startsWith("Codice")) continue; // Salta l'intestazione
+                String[] fields = line.split(";");
+                if (fields.length < 2) {
+                    System.err.println("Riga malformata: " + line);
+                    continue;
+                }
                 Provincia provincia = new Provincia();
-                provincia.setNome(fields[0]); // Nome della provincia
-                provincia.setSigla(fields[1]); // Sigla della provincia
+                provincia.setNome(fields[0].trim()); // Nome della provincia
+                provincia.setSigla(fields[1].trim()); // Sigla della provincia
                 provinciaRepository.save(provincia);
             }
         } catch (IOException e) {
@@ -42,14 +47,22 @@ public class ComuneProvinciaServ {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] fields = line.split(","); // Supponendo che il CSV usi la virgola come separatore
-                Comune comune = new Comune();
-                comune.setNome(fields[0]); // Nome del comune
+                if (line.startsWith("Codice")) continue; // Salta l'intestazione
+                String[] fields = line.split(";"); // Usa il separatore corretto
+                if (fields.length < 4) { // Controlla che ci siano almeno 4 campi
+                    System.err.println("Riga malformata: " + line);
+                    continue;
+                }
 
-                // Cerca la provincia corrispondente nel database
-                Provincia provincia = provinciaRepository.findByNome(fields[1]);
+                Comune comune = new Comune();
+                comune.setNome(fields[2].trim()); // Nome del comune
+
+                // Cerca la provincia corrispondente
+                Provincia provincia = provinciaRepository.findByNome(fields[3].trim());
                 if (provincia != null) {
                     comune.setProvincia(provincia);
+                } else {
+                    System.err.println("Provincia non trovata per: " + fields[3].trim());
                 }
 
                 comuneRepository.save(comune);
