@@ -5,10 +5,18 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Fatture {
+@Table(name = "indirizzi")
+public class Indirizzo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    private  String via;
 
+    private String civico;
+
+    private String cap;
+
+    @OneToOne
+    private Comune comune;
 }

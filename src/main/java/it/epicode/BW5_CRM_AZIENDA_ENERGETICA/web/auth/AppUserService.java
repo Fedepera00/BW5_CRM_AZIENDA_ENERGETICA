@@ -1,9 +1,5 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth.services;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth;
 
-import it.epicode.U2J_W4_D5_PROJECT.auth.entities.AppUser;
-import it.epicode.U2J_W4_D5_PROJECT.auth.utils.JwtTokenUtil;
-import it.epicode.U2J_W4_D5_PROJECT.auth.enums.Role;
-import it.epicode.U2J_W4_D5_PROJECT.auth.repositories.AppUserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +10,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.Optional;
 import java.util.Set;
 
 @Service
-@Validated
 public class AppUserService {
 
     @Autowired
@@ -35,7 +29,6 @@ public class AppUserService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-
     public AppUser registerUser(String username, String password, Set<Role> roles) {
         if (appUserRepository.existsByUsername(username)) {
             throw new EntityExistsException("Username già in uso");
@@ -48,7 +41,6 @@ public class AppUserService {
 
         return appUserRepository.save(appUser);
     }
-
 
     public Optional<AppUser> findByUsername(String username) {
         return appUserRepository.findByUsername(username);
@@ -75,4 +67,9 @@ public class AppUserService {
 
         return appUser;
     }
+
+    public AppUser save(AppUser appUser) {
+        return appUserRepository.save(appUser);
+    }
+
 }

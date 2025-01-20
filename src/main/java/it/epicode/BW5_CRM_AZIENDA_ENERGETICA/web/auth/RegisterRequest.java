@@ -1,4 +1,4 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth.dto.requests;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth;
 
 import lombok.Data;
 

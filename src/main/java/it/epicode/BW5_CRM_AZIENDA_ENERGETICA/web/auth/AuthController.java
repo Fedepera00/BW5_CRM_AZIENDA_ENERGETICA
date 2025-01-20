@@ -1,12 +1,6 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth.controllers;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth;
 
-import it.epicode.U2J_W4_D5_PROJECT.auth.dto.responses.AuthResponse;
-import it.epicode.U2J_W4_D5_PROJECT.auth.enums.Role;
-import it.epicode.U2J_W4_D5_PROJECT.auth.dto.requests.LoginRequest;
-import it.epicode.U2J_W4_D5_PROJECT.auth.dto.requests.RegisterRequest;
-import it.epicode.U2J_W4_D5_PROJECT.auth.services.AppUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +23,7 @@ public class AuthController {
                 registerRequest.getPassword(),
                 Set.of(Role.ROLE_USER) // Assegna il ruolo di default
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body("Registrazione avvenuta con successo");
+        return ResponseEntity.ok("Registrazione avvenuta con successo");
     }
 
     @PostMapping("/login")
@@ -38,7 +32,6 @@ public class AuthController {
                 loginRequest.getUsername(),
                 loginRequest.getPassword()
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
-
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }

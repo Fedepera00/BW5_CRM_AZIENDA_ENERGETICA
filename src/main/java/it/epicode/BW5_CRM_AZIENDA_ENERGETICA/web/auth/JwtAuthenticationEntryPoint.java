@@ -1,4 +1,4 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth.exceptions;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

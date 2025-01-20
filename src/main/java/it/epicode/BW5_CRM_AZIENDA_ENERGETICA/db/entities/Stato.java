@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
+@Table(name = "stati")
 public class Stato {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

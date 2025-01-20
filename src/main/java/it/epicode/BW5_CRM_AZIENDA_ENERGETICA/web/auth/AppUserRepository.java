@@ -1,7 +1,6 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth.repositories;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth;
 
 
-import it.epicode.U2J_W4_D5_PROJECT.auth.entities.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

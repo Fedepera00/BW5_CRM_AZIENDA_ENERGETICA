@@ -1,4 +1,4 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth.utils;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

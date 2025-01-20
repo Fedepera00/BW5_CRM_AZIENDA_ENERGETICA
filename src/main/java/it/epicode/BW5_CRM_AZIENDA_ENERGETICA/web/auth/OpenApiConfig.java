@@ -1,4 +1,4 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth.configurations;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

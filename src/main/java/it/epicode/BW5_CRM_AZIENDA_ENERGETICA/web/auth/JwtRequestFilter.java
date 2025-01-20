@@ -1,8 +1,6 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth.filters;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import it.epicode.U2J_W4_D5_PROJECT.auth.utils.JwtTokenUtil;
-import it.epicode.U2J_W4_D5_PROJECT.auth.services.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +19,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private CorsConfig.CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;

@@ -1,8 +1,5 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth.configurations;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.auth;
 
-import it.epicode.U2J_W4_D5_PROJECT.auth.exceptions.JwtAuthenticationEntryPoint;
-import it.epicode.U2J_W4_D5_PROJECT.auth.filters.JwtRequestFilter;
-import it.epicode.U2J_W4_D5_PROJECT.auth.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +26,7 @@ public class SecurityConfig {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private CorsConfig.CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
