@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -40,8 +41,6 @@ public class ClienteBusiness {
     private String logoAziendale;
 
     @OneToMany
-    Indirizzo indirizzo;
-
-
+    List<Indirizzo> indirizzi;
 
 }

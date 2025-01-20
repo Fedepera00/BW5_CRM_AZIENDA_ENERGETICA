@@ -15,8 +15,8 @@ public class CsvRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         // Percorso per i file CSV
-        String provinceFilePath = "path/to/province-italiane.csv";
-        String comuniFilePath = "path/to/comuni-italiani.csv";
+        String provinceFilePath = "files/province-italiane.csv";
+        String comuniFilePath = "files/comuni-italiani.csv";
 
         // Importa province
         comuneProvinciaServ.importaProvince(provinceFilePath);
