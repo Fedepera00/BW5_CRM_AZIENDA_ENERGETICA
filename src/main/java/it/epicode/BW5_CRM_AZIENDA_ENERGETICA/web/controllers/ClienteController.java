@@ -5,6 +5,7 @@ import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,11 +20,13 @@ public class ClienteController {
     ClienteService clienteService;
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> findAll (){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Cliente>> findAll(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+        // Verifica l'utente e il ruolo tramite il servizio
+        String username = clienteService.getUsername(user);
+        System.out.println("Utente autenticato: " + username);
+
         return ResponseEntity.ok(clienteService.findAll());
     }
-
-
-
 
 }

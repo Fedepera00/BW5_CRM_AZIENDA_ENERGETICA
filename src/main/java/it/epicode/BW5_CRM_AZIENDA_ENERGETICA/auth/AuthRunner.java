@@ -15,19 +15,30 @@ public class AuthRunner implements ApplicationRunner {
     @Autowired
     private AppUserService appUserService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Optional<AppUser> adminUser = appUserService.findByUsername("admin");
         if (adminUser.isEmpty()) {
-            AppUser admin = appUserService.registerUser("admin", "adminpwd", Set.of(Role.ROLE_ADMIN));
+            appUserService.registerUser(
+                    "admin",
+                    "adminpwd",
+                    Set.of(Role.ROLE_ADMIN),
+                    "Admin",  // Nome
+                    "User",   // Cognome
+                    "admin@example.com"  // Email
+            );
         }
 
         Optional<AppUser> normalUser = appUserService.findByUsername("user");
         if (normalUser.isEmpty()) {
-            AppUser user = appUserService.registerUser("user", "userpwd", Set.of(Role.ROLE_USER));
+            appUserService.registerUser(
+                    "user",
+                    "userpwd",
+                    Set.of(Role.ROLE_USER),
+                    "Normal", // Nome
+                    "User",   // Cognome
+                    "user@example.com"  // Email
+            );
         }
     }
 }

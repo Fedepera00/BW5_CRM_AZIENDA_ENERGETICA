@@ -1,11 +1,15 @@
 package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services;
 
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth.AppUser;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth.AppUserRepository;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth.Role;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Cliente;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Indirizzo;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.ClienteRepository;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.ClienteRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +22,21 @@ public class ClienteService {
     @Autowired
     IndirizzoService indirizzoService;
 
+    @Autowired
+    AppUserRepository appUserRepository;
 
+    public String getUsername(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+        // Recupera l'utente AppUser dal database usando lo username
+        AppUser appUser = appUserRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+
+        // Controlla il ruolo dell'utente
+        if (appUser.getRoles().contains(Role.ROLE_ADMIN)) {
+            return appUser.getUsername();
+        } else {
+            throw new RuntimeException("Accesso negato: l'utente non è un amministratore");
+        }
+    }
     public Cliente save(ClienteRequest newCliente) {
         Cliente cliente = new Cliente();
 
