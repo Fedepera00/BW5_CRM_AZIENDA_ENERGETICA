@@ -1,0 +1,13 @@
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.enums;
+
+public enum Stato {
+    IN_ELABORAZIONE,
+    CARICATO,
+    IN_GESTIONE,
+    CONSEGNATO,
+    NON_CONSEGNATO,
+    INVIATO,
+    ACCETTATO,
+    RIFIUTATO,
+    NON_RECAPITATO
+}

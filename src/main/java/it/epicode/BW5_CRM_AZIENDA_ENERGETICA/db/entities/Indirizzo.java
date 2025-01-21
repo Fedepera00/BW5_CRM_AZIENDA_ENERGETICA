@@ -11,12 +11,16 @@ public class Indirizzo {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    private  String via;
+    private String via;
 
     private String civico;
 
+    private String localita;
+
     private String cap;
 
-    @OneToOne
+    @ManyToOne
     private Comune comune;
+
+
 }

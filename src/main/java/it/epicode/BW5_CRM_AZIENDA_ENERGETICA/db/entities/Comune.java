@@ -11,7 +11,9 @@ public class Comune {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    private String nome;
+    private String codiceProvincia;
+    private String progressivo;
+    private String denominazione;
 
     @ManyToOne
     @JoinColumn(name = "provincia_id")
