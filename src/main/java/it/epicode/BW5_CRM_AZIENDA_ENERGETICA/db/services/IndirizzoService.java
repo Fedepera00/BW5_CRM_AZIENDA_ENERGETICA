@@ -1,15 +1,24 @@
 package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services;
 
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth.AppUser;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth.Role;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Cliente;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Comune;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Indirizzo;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.IndirizzoRepository;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.BadRequestException;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.InternalServerErrorException;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.ResourceNotFoundException;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.UnauthorizedException;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.IndirizzoRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -55,12 +64,9 @@ public class IndirizzoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Indirizzo con ID " + id + " non trovato."));
     }
 
-    public List<Indirizzo> findAll() {
-        try {
-            return indirizzoRepository.findAll();
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Errore durante il recupero degli indirizzi: " + e.getMessage());
-        }
+    public Page<Indirizzo> findAll(int page, int size, String sortBy) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+            return indirizzoRepository.findAll(pageable);
     }
 
     public Indirizzo update(Long id, IndirizzoRequest newIndirizzo) {

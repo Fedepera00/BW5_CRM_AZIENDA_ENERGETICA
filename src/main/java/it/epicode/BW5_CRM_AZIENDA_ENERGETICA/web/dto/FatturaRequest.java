@@ -1,20 +1,12 @@
-package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities;
+package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto;
 
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.enums.Stato;
-import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-@Entity
-@Table(name = "fatture")
-public class Fattura {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-
+public class FatturaRequest {
     private LocalDate data;
 
     private Long importo;
@@ -22,5 +14,4 @@ public class Fattura {
     private String numeroFattura;
 
     private Stato stato;
-
 }

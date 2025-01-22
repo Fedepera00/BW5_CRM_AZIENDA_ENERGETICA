@@ -4,6 +4,7 @@ import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Comune;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Provincia;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.ComuneRepository;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.ProvinciaRepository;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,6 @@ public class ComuneService {
                 if (provincia.isPresent()) {
                     Comune comune = new Comune();
                     comune.setCodiceProvincia(codiceProvincia);
-
                     comune.setProgressivo(progressivo);
                     comune.setDenominazione(denominazione);
                     comune.setProvincia(provincia.get());
@@ -79,6 +79,11 @@ public class ComuneService {
     }
 
     public Comune findById(Long id){
-        return comuneRepository.findById(id).get();
+        Optional<Comune> comuneOpt = comuneRepository.findById(id);
+        if(comuneOpt.isEmpty()){
+            throw new ResourceNotFoundException("Comune con ID " + id + " non trovato.");
+        }
+        Comune comune = comuneOpt.get();
+        return comune;
     }
 }

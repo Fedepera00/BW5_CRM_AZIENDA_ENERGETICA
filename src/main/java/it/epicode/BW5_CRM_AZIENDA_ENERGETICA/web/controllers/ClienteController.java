@@ -2,6 +2,7 @@ package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.controllers;
 
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Cliente;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.ClienteService;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.UserRoleService;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.ClienteRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,9 @@ public class ClienteController {
     @Autowired
     ClienteService clienteService;
 
+    @Autowired
+    UserRoleService userRoleService;
+
     @GetMapping("/paged")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Page<Cliente>> findAll(
@@ -25,7 +29,7 @@ public class ClienteController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy) {
-        String username = clienteService.getUsernameForAll(user);
+        String username = userRoleService.getUsernameForAll(user);
         return ResponseEntity.ok(clienteService.findAll(page, size, sortBy));
     }
 
@@ -33,7 +37,7 @@ public class ClienteController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Cliente> findById(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user, @RequestParam Long id) {
         // Verifica l'utente e il ruolo tramite il servizio
-        String username = clienteService.getUsernameForAll(user);
+        String username = userRoleService.getUsernameForAll(user);
 
         return ResponseEntity.ok(clienteService.findById(id));
     }
@@ -41,7 +45,7 @@ public class ClienteController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Cliente> update(@RequestBody ClienteRequest newCliente, @RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        String username = clienteService.getUsernameForAdmin(user);
+        String username = userRoleService.getUsernameForAdmin(user);
 
         return ResponseEntity.ok(clienteService.update(id, newCliente));
     }
@@ -49,7 +53,7 @@ public class ClienteController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Cliente> save(@RequestBody ClienteRequest newCliente, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        String username = clienteService.getUsernameForAdmin(user);
+        String username = userRoleService.getUsernameForAdmin(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.save(newCliente));
     }
@@ -57,7 +61,7 @@ public class ClienteController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Cliente> delete(@RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user){
-        String username = clienteService.getUsernameForAdmin(user);
+        String username = userRoleService.getUsernameForAdmin(user);
 
         return ResponseEntity.ok(clienteService.delete(id));
     }

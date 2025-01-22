@@ -1,9 +1,9 @@
 package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.controllers;
 
-import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Indirizzo;
-import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.IndirizzoService;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Fattura;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.FatturaService;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.UserRoleService;
-import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.IndirizzoRequest;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.FatturaRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,56 +13,56 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/indirizzo")
+@RequestMapping("/api/fattura")
 @PreAuthorize("isAuthenticated()")
-public class IndirizzoController {
+public class FatturaController {
     @Autowired
-    IndirizzoService indirizzoService;
+    FatturaService fatturaService;
 
     @Autowired
     UserRoleService userRoleService;
 
     @GetMapping("/paged")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Page<Indirizzo>> findAll(
+    public ResponseEntity<Page<Fattura>> findAll(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy) {
         String username = userRoleService.getUsernameForAll(user);
-        return ResponseEntity.ok(indirizzoService.findAll(page, size, sortBy));
+        return ResponseEntity.ok(fatturaService.findAll(page, size, sortBy));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Indirizzo> findById(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user, @RequestParam Long id) {
+    public ResponseEntity<Fattura> findById(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user, @RequestParam Long id) {
         // Verifica l'utente e il ruolo tramite il servizio
         String username = userRoleService.getUsernameForAll(user);
 
-        return ResponseEntity.ok(indirizzoService.findById(id));
+        return ResponseEntity.ok(fatturaService.findById(id));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Indirizzo> update(@RequestBody IndirizzoRequest newIndirizzo, @RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+    public ResponseEntity<Fattura> update(@RequestBody FatturaRequest newFattura, @RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         String username = userRoleService.getUsernameForAdmin(user);
 
-        return ResponseEntity.ok(indirizzoService.update(id, newIndirizzo));
+        return ResponseEntity.ok(fatturaService.update(id, newFattura));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Indirizzo> save(@RequestBody IndirizzoRequest newIndirizzo, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+    public ResponseEntity<Fattura> save(@RequestBody FatturaRequest newFattura, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         String username = userRoleService.getUsernameForAdmin(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(indirizzoService.save(newIndirizzo));
+        return ResponseEntity.status(HttpStatus.CREATED).body(fatturaService.save(newFattura));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Indirizzo> delete(@RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user){
+    public ResponseEntity<Fattura> delete(@RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user){
         String username = userRoleService.getUsernameForAdmin(user);
 
-        return ResponseEntity.ok(indirizzoService.delete(id));
+        return ResponseEntity.ok(fatturaService.delete(id));
     }
 }
