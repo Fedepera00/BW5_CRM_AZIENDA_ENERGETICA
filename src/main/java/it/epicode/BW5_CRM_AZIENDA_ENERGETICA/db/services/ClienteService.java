@@ -25,7 +25,20 @@ public class ClienteService {
     @Autowired
     AppUserRepository appUserRepository;
 
-    public String getUsername(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+    public String getUsernameForAll(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+        // Recupera l'utente AppUser dal database usando lo username
+        AppUser appUser = appUserRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+
+        // Controlla il ruolo dell'utente
+        if (appUser.getRoles().contains(Role.ROLE_USER) || appUser.getRoles().contains(Role.ROLE_ADMIN)) {
+            return appUser.getUsername();
+        } else {
+            throw new RuntimeException("Accesso negato: l'utente non ha i privilegi necessari");
+        }
+    }
+
+    public String getUsernameForAdmin(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         // Recupera l'utente AppUser dal database usando lo username
         AppUser appUser = appUserRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
@@ -34,9 +47,10 @@ public class ClienteService {
         if (appUser.getRoles().contains(Role.ROLE_ADMIN)) {
             return appUser.getUsername();
         } else {
-            throw new RuntimeException("Accesso negato: l'utente non è un amministratore");
+            throw new RuntimeException("Accesso negato: l'utente non ha i privilegi necessari");
         }
     }
+
     public Cliente save(ClienteRequest newCliente) {
         Cliente cliente = new Cliente();
 
