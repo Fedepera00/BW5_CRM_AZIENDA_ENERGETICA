@@ -67,18 +67,7 @@ public class ClienteController {
 
         return ResponseEntity.ok(clienteService.delete(id));
     }
-    @PostMapping("/{id}/upload-logo")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> uploadLogo(
-            @PathVariable Long id,
-            @RequestParam("file") MultipartFile file,
-            @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        String username = userRoleService.getUsernameForAdmin(user);
 
-        String logoUrl = clienteService.uploadLogo(id, file);
-        return ResponseEntity.ok("Logo caricato con successo: " + logoUrl);
-
-    }
 }
 
 

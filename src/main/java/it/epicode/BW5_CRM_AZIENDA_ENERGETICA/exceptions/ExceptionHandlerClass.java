@@ -64,4 +64,17 @@ public class ExceptionHandlerClass {
         error.put("error", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(value = UploadException.class)
+    protected ResponseEntity<String> uploadExceptionHandler(UploadException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(value = AlreadyExistsException.class)
+    protected ResponseEntity<ErrorMessage> alreadyExists(AlreadyExistsException ex) {
+        ErrorMessage e = new ErrorMessage();
+        e.setStatusCode(HttpStatus.BAD_REQUEST);
+        e.setMessage("Error da classe: "+ex.getMessage());
+        return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+    }
 }

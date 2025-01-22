@@ -35,8 +35,7 @@ public class ClienteService {
     @Autowired
     AppUserRepository appUserRepository;
 
-    @Autowired
-    CloudinaryService cloudinaryService;
+
 
     public Cliente save(@Valid ClienteRequest newCliente) {
         Cliente cliente = new Cliente();
@@ -100,28 +99,5 @@ public class ClienteService {
         return c;
     }
 
-    public String uploadLogo(Long clienteId, MultipartFile logoFile) {
-        if (logoFile == null || logoFile.isEmpty()) {
-            throw new IllegalArgumentException("Il file logo non può essere vuoto");
-        }
 
-        // Recupera il cliente dal database
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente con ID " + clienteId + " non trovato"));
-
-        try {
-            // Upload del logo su Cloudinary
-            String logoUrl = cloudinaryService.uploadImage(logoFile);
-
-            // Associa l'URL al campo logoAziendale del cliente
-            cliente.setLogoAziendale(logoUrl);
-            System.out.println("Cliente aggiornato: " + cliente);
-            // Salva l'entità cliente aggiornata nel database
-            clienteRepository.save(cliente);
-
-            return logoUrl;
-        } catch (IOException e) {
-            throw new RuntimeException("Errore durante l'upload del logo: " + e.getMessage(), e);
-        }
-    }
 }
