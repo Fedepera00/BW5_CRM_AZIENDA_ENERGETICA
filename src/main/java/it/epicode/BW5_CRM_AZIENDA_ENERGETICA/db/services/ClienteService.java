@@ -9,6 +9,7 @@ import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.ClienteRepository;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.ResourceNotFoundException;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.UnauthorizedException;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.ClienteRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,8 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
+import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
+@Validated
 @Service
 public class ClienteService {
     @Autowired
@@ -30,7 +33,8 @@ public class ClienteService {
     @Autowired
     AppUserRepository appUserRepository;
 
-    public Cliente save(ClienteRequest newCliente) {
+
+    public Cliente save(@Valid ClienteRequest newCliente) {
         Cliente cliente = new Cliente();
         BeanUtils.copyProperties(newCliente, cliente);
 
@@ -64,7 +68,7 @@ public class ClienteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente con ID " + id + " non trovato"));
     }
 
-    public Cliente update(Long id, ClienteRequest newCliente) {
+    public Cliente update(Long id,@Valid ClienteRequest newCliente) {
         Cliente c = clienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente con ID " + id + " non trovato"));
 

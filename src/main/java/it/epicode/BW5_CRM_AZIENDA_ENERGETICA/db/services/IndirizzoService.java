@@ -12,6 +12,7 @@ import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.ResourceNotFoundExceptio
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.UnauthorizedException;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.IndirizzoRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,7 +35,7 @@ public class IndirizzoService {
     ComuneService comuneService;
 
     @Transactional
-    public Indirizzo save(IndirizzoRequest newIndirizzo) {
+    public Indirizzo save(@Valid IndirizzoRequest newIndirizzo) {
         if (newIndirizzo == null) {
             throw new BadRequestException("La richiesta per il nuovo indirizzo è nulla.");
         }
@@ -69,7 +70,7 @@ public class IndirizzoService {
             return indirizzoRepository.findAll(pageable);
     }
 
-    public Indirizzo update(Long id, IndirizzoRequest newIndirizzo) {
+    public Indirizzo update(Long id, @Valid IndirizzoRequest newIndirizzo) {
         if (id == null || newIndirizzo == null) {
             throw new BadRequestException("ID o richiesta indirizzo non validi.");
         }

@@ -1,5 +1,6 @@
 package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities;
 
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.enums.TipoCliente;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -43,5 +44,5 @@ public class Cliente {
     @OneToMany
     private List<Indirizzo> indirizzi;
 
-
+    private TipoCliente tipoCliente;
 }

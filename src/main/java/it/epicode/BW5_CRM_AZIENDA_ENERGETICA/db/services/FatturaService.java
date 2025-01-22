@@ -8,6 +8,7 @@ import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.InternalServerErrorExcep
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.ResourceNotFoundException;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.FatturaRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 @Service
 public class FatturaService {
     @Autowired
@@ -25,7 +28,7 @@ public class FatturaService {
     ClienteService clienteService;
 
     @Transactional
-    public Fattura save(FatturaRequest newFattura){
+    public Fattura save(@Valid FatturaRequest newFattura){
         Fattura fattura = new Fattura();
         BeanUtils.copyProperties(newFattura, fattura);
         Cliente cliente = clienteService.findById(newFattura.getClienteId());

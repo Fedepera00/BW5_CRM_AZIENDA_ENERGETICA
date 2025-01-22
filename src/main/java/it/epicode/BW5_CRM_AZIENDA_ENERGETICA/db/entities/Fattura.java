@@ -21,6 +21,7 @@ public class Fattura {
 
     private String numeroFattura;
 
+    @Enumerated (EnumType.STRING)
     private Stato stato;
 
     @ManyToOne
