@@ -4,6 +4,7 @@ import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Cliente;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.ClienteService;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.UserRoleService;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.ClienteRequest;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.UploadLogoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/cliente")
@@ -64,6 +66,18 @@ public class ClienteController {
         String username = userRoleService.getUsernameForAdmin(user);
 
         return ResponseEntity.ok(clienteService.delete(id));
+    }
+    @PostMapping("/{id}/upload-logo")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> uploadLogo(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+        String username = userRoleService.getUsernameForAdmin(user);
+
+        String logoUrl = clienteService.uploadLogo(id, file);
+        return ResponseEntity.ok("Logo caricato con successo: " + logoUrl);
+
     }
 }
 
