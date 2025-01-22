@@ -1,9 +1,13 @@
 package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth;
 
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.ConflictException;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.UnauthorizedException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -30,6 +34,15 @@ public class AppUserService {
     private JwtTokenUtil jwtTokenUtil;
 
     public AppUser registerUser(String username, String password, Set<Role> roles, String nome, String cognome, String email) {
+        // Verifica se l'username o l'email esistono già
+        if (appUserRepository.findByUsername(username).isPresent()) {
+            throw new ConflictException("Username già in uso");
+        }
+
+        if (appUserRepository.findByEmail(email).isPresent()) {
+            throw new ConflictException("Email già in uso");
+        }
+
         AppUser user = new AppUser();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
@@ -37,15 +50,15 @@ public class AppUserService {
         user.setNome(nome);
         user.setCognome(cognome);
         user.setEmail(email);
+
         return appUserRepository.save(user);
     }
-
 
     public Optional<AppUser> findByUsername(String username) {
         return appUserRepository.findByUsername(username);
     }
 
-    public String authenticateUser(String username, String password)  {
+    public String authenticateUser(String username, String password) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
@@ -53,22 +66,24 @@ public class AppUserService {
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             return jwtTokenUtil.generateToken(userDetails);
+        } catch (BadCredentialsException e) {
+            throw new UnauthorizedException("Credenziali non valide.");
         } catch (AuthenticationException e) {
-            throw new SecurityException("Credenziali non valide", e);
+            throw new UnauthorizedException("Errore nell'autenticazione: " + e.getMessage());
         }
     }
 
-
-    public AppUser loadUserByUsername(String username)  {
-        AppUser appUser = appUserRepository.findByUsername(username)
-            .orElseThrow(() -> new EntityNotFoundException("Utente non trovato con username: " + username));
-
-
-        return appUser;
+    public AppUser loadUserByUsername(String username) {
+        return appUserRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Utente non trovato con username: " + username));
     }
 
     public AppUser save(AppUser appUser) {
-        return appUserRepository.save(appUser);
+        try {
+            return appUserRepository.save(appUser);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConflictException("Dati non validi o duplicati: " + e.getMessage());
+        }
     }
 
 }

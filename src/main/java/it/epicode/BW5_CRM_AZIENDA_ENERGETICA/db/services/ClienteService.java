@@ -6,6 +6,8 @@ import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth.Role;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Cliente;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Indirizzo;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.ClienteRepository;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.ResourceNotFoundException;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.UnauthorizedException;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.ClienteRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ClienteService {
@@ -31,52 +31,50 @@ public class ClienteService {
     AppUserRepository appUserRepository;
 
     public String getUsernameForAll(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        // Recupera l'utente AppUser dal database usando lo username
         AppUser appUser = appUserRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new UnauthorizedException("Utente non trovato"));
 
-        // Controlla il ruolo dell'utente
         if (appUser.getRoles().contains(Role.ROLE_USER) || appUser.getRoles().contains(Role.ROLE_ADMIN)) {
             return appUser.getUsername();
         } else {
-            throw new RuntimeException("Accesso negato: l'utente non ha i privilegi necessari");
+            throw new UnauthorizedException("Accesso negato: l'utente non ha i privilegi necessari");
         }
     }
 
     public String getUsernameForAdmin(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         // Recupera l'utente AppUser dal database usando lo username
         AppUser appUser = appUserRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new UnauthorizedException("Utente non trovato"));
 
         // Controlla il ruolo dell'utente
         if (appUser.getRoles().contains(Role.ROLE_ADMIN)) {
             return appUser.getUsername();
         } else {
-            throw new RuntimeException("Accesso negato: l'utente non ha i privilegi necessari");
+            throw new UnauthorizedException("Accesso negato: l'utente non ha i privilegi necessari");
         }
     }
 
     public Cliente save(ClienteRequest newCliente) {
         Cliente cliente = new Cliente();
-
         BeanUtils.copyProperties(newCliente, cliente);
 
-        // Verifica se la lista indirizzi è null, se lo è, la inizializza come una nuova lista
+        // Verifica se la lista degli indirizzi è nulla, e se lo è, inizializzala come una nuova lista
         if (cliente.getIndirizzi() == null) {
             cliente.setIndirizzi(new ArrayList<>());
         }
 
         if (newCliente.getIndirizziIds() != null && !newCliente.getIndirizziIds().isEmpty()) {
             for (Long indirizzoId : newCliente.getIndirizziIds()) {
-                Indirizzo indirizzo = indirizzoService.findById(indirizzoId);
-                if (indirizzo != null) {
+                try {
+                    // Cerca l'indirizzo per ID. Se non esiste, verrà lanciata una ResourceNotFoundException
+                    Indirizzo indirizzo = indirizzoService.findById(indirizzoId);
                     cliente.getIndirizzi().add(indirizzo);
-                } else {
-                    System.err.println("Indirizzo con ID " + indirizzoId + " non trovato.");
+                } catch (ResourceNotFoundException ex) {
+                    // Gestisci il caso in cui l'indirizzo non sia trovato
+                    throw new ResourceNotFoundException("Indirizzo con ID " + indirizzoId + " non trovato.");
                 }
             }
         }
-
         return clienteRepository.save(cliente);
     }
 
@@ -85,32 +83,35 @@ public class ClienteService {
         return clienteRepository.findAll(pageable);
     }
 
-    public Cliente findById(Long id){
-        return clienteRepository.findById(id).get();
+    public Cliente findById(Long id) {
+        return clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente con ID " + id + " non trovato"));
     }
 
     public Cliente update(Long id, ClienteRequest newCliente) {
-        Cliente c = clienteRepository.findById(id).get();
+        Cliente c = clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente con ID " + id + " non trovato"));
+
         BeanUtils.copyProperties(newCliente, c);
 
         if (newCliente.getIndirizziIds() != null && !newCliente.getIndirizziIds().isEmpty()) {
             for (Long indirizzoId : newCliente.getIndirizziIds()) {
                 Indirizzo indirizzo = indirizzoService.findById(indirizzoId);
                 if (indirizzo != null) {
-                    // Verifica se l'indirizzo è già presente nella lista
                     if (!c.getIndirizzi().contains(indirizzo)) {
                         c.getIndirizzi().add(indirizzo);
                     }
                 } else {
-                    System.err.println("Indirizzo con ID " + indirizzoId + " non trovato.");
+                    throw new ResourceNotFoundException("Indirizzo con ID " + indirizzoId + " non trovato.");
                 }
             }
         }
         return clienteRepository.save(c);
     }
 
-    public Cliente delete (Long id){
-        Cliente c = clienteRepository.findById(id).get();
+    public Cliente delete(Long id) {
+        Cliente c = clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente con ID " + id + " non trovato"));
         clienteRepository.delete(c);
         return c;
     }

@@ -3,6 +3,7 @@ package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Comune;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Indirizzo;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.IndirizzoRepository;
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.ResourceNotFoundException;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.IndirizzoRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -33,7 +34,9 @@ public class IndirizzoService {
     }
 
     public Indirizzo findById(Long id){
-        return indirizzoRepository.findById(id).get();
+        // Restituisce un Optional e gestisce il caso in cui l'indirizzo non esista
+        return indirizzoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Indirizzo con ID " + id + " non trovato."));
     }
 
     public List<Indirizzo> findAll(){
@@ -41,7 +44,7 @@ public class IndirizzoService {
     }
 
     public Indirizzo update(Long id, IndirizzoRequest newIndirizzo){
-        Indirizzo indirizzo = indirizzoRepository.findById(id).get();
+        Indirizzo indirizzo = findById(id); // Usa il nuovo metodo con gestione dell'eccezione
         Comune comune = comuneService.findById(newIndirizzo.getComuneId());
         BeanUtils.copyProperties(newIndirizzo, indirizzo);
         indirizzo.setComune(comune);
@@ -50,7 +53,7 @@ public class IndirizzoService {
     }
 
     public Indirizzo delete(Long id){
-        Indirizzo indirizzo = indirizzoRepository.findById(id).get();
+        Indirizzo indirizzo = findById(id); // Usa il nuovo metodo con gestione dell'eccezione
         indirizzoRepository.delete(indirizzo);
         return indirizzo;
     }
