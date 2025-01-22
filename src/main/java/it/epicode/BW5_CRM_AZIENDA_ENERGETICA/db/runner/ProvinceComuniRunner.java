@@ -4,11 +4,13 @@ import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.ComuneService;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services.ProvinciaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
+@Order(1)
 public class ProvinceComuniRunner implements CommandLineRunner {
 
     @Autowired

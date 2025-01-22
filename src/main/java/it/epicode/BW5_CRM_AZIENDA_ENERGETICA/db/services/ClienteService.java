@@ -9,9 +9,14 @@ import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.ClienteRepository;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.ClienteRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,6 +61,11 @@ public class ClienteService {
 
         BeanUtils.copyProperties(newCliente, cliente);
 
+        // Verifica se la lista indirizzi è null, se lo è, la inizializza come una nuova lista
+        if (cliente.getIndirizzi() == null) {
+            cliente.setIndirizzi(new ArrayList<>());
+        }
+
         if (newCliente.getIndirizziIds() != null && !newCliente.getIndirizziIds().isEmpty()) {
             for (Long indirizzoId : newCliente.getIndirizziIds()) {
                 Indirizzo indirizzo = indirizzoService.findById(indirizzoId);
@@ -70,22 +80,27 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
-    public List<Cliente> findAll(){
-        return clienteRepository.findAll();
+    public Page<Cliente> findAll(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return clienteRepository.findAll(pageable);
     }
 
     public Cliente findById(Long id){
         return clienteRepository.findById(id).get();
     }
 
-    public Cliente update(Long id, ClienteRequest newCliente){
+    public Cliente update(Long id, ClienteRequest newCliente) {
         Cliente c = clienteRepository.findById(id).get();
         BeanUtils.copyProperties(newCliente, c);
+
         if (newCliente.getIndirizziIds() != null && !newCliente.getIndirizziIds().isEmpty()) {
             for (Long indirizzoId : newCliente.getIndirizziIds()) {
                 Indirizzo indirizzo = indirizzoService.findById(indirizzoId);
                 if (indirizzo != null) {
-                    c.getIndirizzi().add(indirizzo);
+                    // Verifica se l'indirizzo è già presente nella lista
+                    if (!c.getIndirizzi().contains(indirizzo)) {
+                        c.getIndirizzi().add(indirizzo);
+                    }
                 } else {
                     System.err.println("Indirizzo con ID " + indirizzoId + " non trovato.");
                 }
@@ -99,4 +114,5 @@ public class ClienteService {
         clienteRepository.delete(c);
         return c;
     }
+
 }
