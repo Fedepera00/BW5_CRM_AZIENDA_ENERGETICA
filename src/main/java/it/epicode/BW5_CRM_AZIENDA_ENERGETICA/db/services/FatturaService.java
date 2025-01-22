@@ -1,5 +1,6 @@
 package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services;
 
+import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Cliente;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Fattura;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.FatturaRepository;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.BadRequestException;
@@ -15,17 +16,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class FatturaService {
     @Autowired
     FatturaRepository fatturaRepository;
 
+    @Autowired
+    ClienteService clienteService;
+
     @Transactional
     public Fattura save(FatturaRequest newFattura){
         Fattura fattura = new Fattura();
         BeanUtils.copyProperties(newFattura, fattura);
+        Cliente cliente = clienteService.findById(newFattura.getClienteId());
+        fattura.setCliente(cliente);
 
         return fatturaRepository.save(fattura);
     }
@@ -42,15 +46,6 @@ public class FatturaService {
     public Page<Fattura> findAll(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return fatturaRepository.findAll(pageable);
-    }
-
-    public Fattura update (Long id, FatturaRequest newFattura){
-        Optional<Fattura> fatturaOpt = fatturaRepository.findById(id);
-        if(fatturaOpt.isEmpty()){
-            throw new ResourceNotFoundException("Fattura con ID " + id + " non trovato.");
-        }
-        Fattura fattura = fatturaOpt.get();
-        return fatturaRepository.save(fattura);
     }
 
     public Fattura delete(Long id) {

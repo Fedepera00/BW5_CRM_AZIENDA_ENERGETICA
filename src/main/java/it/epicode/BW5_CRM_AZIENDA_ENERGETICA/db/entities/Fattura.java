@@ -23,4 +23,6 @@ public class Fattura {
 
     private Stato stato;
 
+    @ManyToOne
+    private Cliente cliente;
 }

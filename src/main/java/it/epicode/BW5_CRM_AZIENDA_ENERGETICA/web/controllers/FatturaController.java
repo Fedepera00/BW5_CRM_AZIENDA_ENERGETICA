@@ -42,14 +42,6 @@ public class FatturaController {
         return ResponseEntity.ok(fatturaService.findById(id));
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Fattura> update(@RequestBody FatturaRequest newFattura, @RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        String username = userRoleService.getUsernameForAdmin(user);
-
-        return ResponseEntity.ok(fatturaService.update(id, newFattura));
-    }
-
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Fattura> save(@RequestBody FatturaRequest newFattura, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {

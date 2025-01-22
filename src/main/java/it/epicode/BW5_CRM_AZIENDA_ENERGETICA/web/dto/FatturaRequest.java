@@ -14,4 +14,6 @@ public class FatturaRequest {
     private String numeroFattura;
 
     private Stato stato;
+
+    private Long ClienteId;
 }
