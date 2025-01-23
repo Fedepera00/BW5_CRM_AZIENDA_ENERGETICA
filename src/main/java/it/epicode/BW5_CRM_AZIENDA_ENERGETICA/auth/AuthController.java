@@ -29,12 +29,13 @@ public class AuthController {
         return ResponseEntity.ok("Registrazione avvenuta con successo");
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
-        String token = appUserService.authenticateUser(
-                loginRequest.getUsername(),
-                loginRequest.getPassword()
-        );
-        return ResponseEntity.ok(new AuthResponse(token));
+
+        @PostMapping("/login")
+        public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+            AuthResponse authResponse = appUserService.authenticateUser(
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword()
+            );
+            return ResponseEntity.ok(authResponse);
+        }
     }
-}

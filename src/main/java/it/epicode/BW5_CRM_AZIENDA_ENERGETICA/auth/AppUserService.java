@@ -58,14 +58,25 @@ public class AppUserService {
         return appUserRepository.findByUsername(username);
     }
 
-    public String authenticateUser(String username, String password) {
+    public AuthResponse authenticateUser(String username, String password) {
         try {
+            // Autenticazione con AuthenticationManager
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
+            // Recupera i dettagli dell'utente autenticato
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            return jwtTokenUtil.generateToken(userDetails);
+
+            // Genera il token JWT
+            String token = jwtTokenUtil.generateToken(userDetails);
+
+            // Recupera l'oggetto AppUser dal database
+            AppUser user = loadUserByUsername(username);
+
+            // Restituisce il token e l'utente
+            return new AuthResponse(token, user);
+
         } catch (BadCredentialsException e) {
             throw new UnauthorizedException("Credenziali non valide.");
         } catch (AuthenticationException e) {
