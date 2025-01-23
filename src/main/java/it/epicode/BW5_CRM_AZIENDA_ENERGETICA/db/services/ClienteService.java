@@ -1,13 +1,13 @@
 package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.services;
 
-import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth.AppUser;
+
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth.AppUserRepository;
-import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.auth.Role;
+
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Cliente;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities.Indirizzo;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.repositories.ClienteRepository;
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.ResourceNotFoundException;
-import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.exceptions.UnauthorizedException;
+
 import it.epicode.BW5_CRM_AZIENDA_ENERGETICA.web.dto.ClienteRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -16,12 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+
+
 import java.util.ArrayList;
 @Validated
 @Service
@@ -64,6 +64,7 @@ public class ClienteService {
     public Page<Cliente> findAll(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return clienteRepository.findAll(pageable);
+
     }
 
     public Cliente findById(Long id) {

@@ -62,7 +62,6 @@
         </dependency>
 
         <!-- sicurezza -->
-
         <dependency>
             <groupId>com.cloudinary</groupId>
             <artifactId>cloudinary-http44</artifactId>
