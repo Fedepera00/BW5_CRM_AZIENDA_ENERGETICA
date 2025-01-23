@@ -29,7 +29,7 @@ public class ExceptionHandlerClass {
 
     @ExceptionHandler(value = UnauthorizedException.class)
     protected ResponseEntity<Object> eventNotFoundError(UnauthorizedException e) {
-        return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = ResourceNotFoundException.class)

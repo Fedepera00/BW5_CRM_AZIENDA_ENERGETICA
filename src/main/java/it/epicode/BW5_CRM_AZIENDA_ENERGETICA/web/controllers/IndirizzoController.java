@@ -29,31 +29,39 @@ public class IndirizzoController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy) {
-        String username = userRoleService.getUsernameForAll(user);
+        String username = user.getUsername();
+
+        userRoleService.getUsernameForAll(username);
         return ResponseEntity.ok(indirizzoService.findAll(page, size, sortBy));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Indirizzo> findById(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user, @RequestParam Long id) {
+    public ResponseEntity<Indirizzo> findById(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user, @PathVariable Long id) {
         // Verifica l'utente e il ruolo tramite il servizio
-        String username = userRoleService.getUsernameForAll(user);
+        String username = user.getUsername();
+
+        userRoleService.getUsernameForAll(username);
 
         return ResponseEntity.ok(indirizzoService.findById(id));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Indirizzo> update(@RequestBody IndirizzoRequest newIndirizzo, @RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        String username = userRoleService.getUsernameForAdmin(user);
+    public ResponseEntity<Indirizzo> update(@RequestBody IndirizzoRequest newIndirizzo, @PathVariable Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+        String username = user.getUsername();
+
+        userRoleService.getUsernameForAdmin(username);
 
         return ResponseEntity.ok(indirizzoService.update(id, newIndirizzo));
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Indirizzo> save(@RequestBody IndirizzoRequest newIndirizzo, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        String username = userRoleService.getUsernameForAdmin(user);
+        String username = user.getUsername();
+
+        userRoleService.getUsernameForAll(username);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(indirizzoService.save(newIndirizzo));
     }
@@ -61,7 +69,9 @@ public class IndirizzoController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Indirizzo> delete(@RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user){
-        String username = userRoleService.getUsernameForAdmin(user);
+        String username = user.getUsername();
+
+        userRoleService.getUsernameForAdmin(username);
 
         return ResponseEntity.ok(indirizzoService.delete(id));
     }
