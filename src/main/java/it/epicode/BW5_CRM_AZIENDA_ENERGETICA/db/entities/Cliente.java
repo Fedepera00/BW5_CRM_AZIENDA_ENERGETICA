@@ -44,5 +44,6 @@ public class Cliente {
     @OneToMany
     private List<Indirizzo> indirizzi;
 
+    @Enumerated (EnumType.STRING)
     private TipoCliente tipoCliente;
 }
