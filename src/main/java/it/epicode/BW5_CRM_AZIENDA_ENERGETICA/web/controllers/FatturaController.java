@@ -29,15 +29,19 @@ public class FatturaController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy) {
-        String username = userRoleService.getUsernameForAll(user);
+        String username = user.getUsername();
+
+        userRoleService.getUsernameForAll(username);
         return ResponseEntity.ok(fatturaService.findAll(page, size, sortBy));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Fattura> findById(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user, @RequestParam Long id) {
+    public ResponseEntity<Fattura> findById(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user, @PathVariable Long id) {
         // Verifica l'utente e il ruolo tramite il servizio
-        String username = userRoleService.getUsernameForAll(user);
+        String username = user.getUsername();
+
+        userRoleService.getUsernameForAll(username);
 
         return ResponseEntity.ok(fatturaService.findById(id));
     }
@@ -45,15 +49,19 @@ public class FatturaController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Fattura> save(@RequestBody FatturaRequest newFattura, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        String username = userRoleService.getUsernameForAdmin(user);
+        String username = user.getUsername();
+
+        userRoleService.getUsernameForAdmin(username);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(fatturaService.save(newFattura));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Fattura> delete(@RequestParam Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user){
-        String username = userRoleService.getUsernameForAdmin(user);
+    public ResponseEntity<Fattura> delete(@PathVariable Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user){
+        String username = user.getUsername();
+
+        userRoleService.getUsernameForAdmin(username);
 
         return ResponseEntity.ok(fatturaService.delete(id));
     }
