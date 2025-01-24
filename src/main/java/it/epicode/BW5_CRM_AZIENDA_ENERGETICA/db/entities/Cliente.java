@@ -41,6 +41,9 @@ public class Cliente {
 
     private String logoAziendale;
 
+    @OneToOne
+    SocietaLogo societaLogo;
+
     @OneToMany
     private List<Indirizzo> indirizzi;
 

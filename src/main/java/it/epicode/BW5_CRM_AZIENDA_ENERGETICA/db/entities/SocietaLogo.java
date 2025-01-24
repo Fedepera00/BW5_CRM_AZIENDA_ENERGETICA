@@ -1,5 +1,6 @@
 package it.epicode.BW5_CRM_AZIENDA_ENERGETICA.db.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,8 +14,11 @@ public class SocietaLogo {
 
     private String imageUrl;
 
+    @JsonIgnore
     @OneToOne
     Cliente cliente;
+
+
 
 
 }

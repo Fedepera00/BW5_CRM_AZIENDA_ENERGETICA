@@ -77,8 +77,6 @@ public class AppUserService {
             // Restituisce il token e l'utente
             return new AuthResponse(token, user);
 
-        } catch (BadCredentialsException e) {
-            throw new UnauthorizedException("Credenziali non valide.");
         } catch (AuthenticationException e) {
             throw new UnauthorizedException("Errore nell'autenticazione: " + e.getMessage());
         }
